@@ -380,6 +380,69 @@
     }
     .modal-close:hover { opacity: 0.85; }
 
+    /* ── Name input ── */
+    .name-input-wrap {
+      margin: 1.4rem 0 0.4rem;
+      position: relative;
+    }
+    .name-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--gold-dim);
+      padding: 0.6rem 0;
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.3s;
+      caret-color: var(--gold);
+    }
+    .name-input::placeholder { color: var(--muted); font-style: italic; }
+    .name-input:focus { border-color: var(--gold); }
+    .name-input-label {
+      display: block;
+      font-size: 0.56rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .input-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      margin-top: 2px;
+    }
+    .name-input:focus ~ .input-line { transform: scaleX(1); }
+
+    /* ── Status message ── */
+    .status-msg {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      margin-top: 0.8rem;
+      min-height: 1.2rem;
+      transition: color 0.3s;
+    }
+    .status-msg.error { color: #e07070; }
+    .status-msg.success { color: var(--gold-light); }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 1px solid var(--gold-dim);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* ── Responsive ── */
     @media (max-width: 520px) {
       .card { padding: 2.8rem 1.6rem 2.4rem; }
@@ -487,11 +550,40 @@
 <!-- Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-    <h2>¡Perfecto! 🥂</h2>
-    <p>¡Qué alegría contar con vos!<br>
-       Nos vemos el <strong style="color:var(--gold)">6 de Mayo a las 21 hs.</strong><br>
-       Va a ser una noche increíble.</p>
-    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+
+    <!-- Step 1: form -->
+    <div id="modal-form">
+      <h2>¿Quién va? ✨</h2>
+      <p style="margin-bottom:0.4rem">Dejá tu nombre para confirmar tu lugar.</p>
+      <div class="name-input-wrap">
+        <label class="name-input-label" for="guest-name">Tu nombre</label>
+        <input
+          class="name-input"
+          id="guest-name"
+          type="text"
+          placeholder="Escribí tu nombre..."
+          autocomplete="off"
+          maxlength="80"
+        />
+        <div class="input-line"></div>
+      </div>
+      <p class="status-msg" id="status-msg"></p>
+      <button class="modal-close" id="btn-confirm" onclick="confirmarAsistencia()">
+        <span>Confirmar</span>
+      </button>
+      <br>
+      <button style="background:transparent;border:none;color:var(--muted);font-family:'Josefin Sans',sans-serif;font-size:0.6rem;letter-spacing:0.2em;cursor:none;margin-top:0.8rem;text-transform:uppercase;" onclick="closeModal()">Cancelar</button>
+    </div>
+
+    <!-- Step 2: success -->
+    <div id="modal-success" style="display:none">
+      <h2>¡Nos vemos! 🥂</h2>
+      <p>¡Qué alegría contar con vos, <strong id="confirmed-name" style="color:var(--gold)"></strong>!<br>
+         Nos vemos el <strong style="color:var(--gold)">6 de Mayo a las 21 hs.</strong><br>
+         Va a ser una noche increíble.</p>
+      <button class="modal-close" onclick="closeModal()" style="margin-top:1.6rem">Cerrar</button>
+    </div>
+
   </div>
 </div>
 
@@ -630,9 +722,82 @@
     drawBurst();
   }
 
+  /* ── Supabase config ── */
+  const SUPABASE_URL  = 'https://qidmdxvevuzdbyjjteqv.supabase.co';
+  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpZG1keHZldnV6ZGJ5amp0ZXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NjIzODAsImV4cCI6MjA5MzMzODM4MH0.cepNrb2AL4IlTcz0tMJJX0IyU8gOrgxo4AmM1vYgUkw';
+
+  async function guardarInvitado(nombre) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/invitados`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ nombre })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `Error ${res.status}`);
+    }
+  }
+
   /* ── Modal ── */
-  function openModal() { document.getElementById('modal').classList.add('open'); burst(); }
-  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.getElementById('modal-form').style.display    = 'block';
+    document.getElementById('modal-success').style.display = 'none';
+    document.getElementById('guest-name').value = '';
+    document.getElementById('status-msg').textContent = '';
+    document.getElementById('status-msg').className  = 'status-msg';
+    setTimeout(() => document.getElementById('guest-name').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  async function confirmarAsistencia() {
+    const input  = document.getElementById('guest-name');
+    const status = document.getElementById('status-msg');
+    const btn    = document.getElementById('btn-confirm');
+    const nombre = input.value.trim();
+
+    if (!nombre) {
+      status.textContent = 'Por favor escribí tu nombre.';
+      status.className   = 'status-msg error';
+      input.focus();
+      return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span><span>Guardando...</span>';
+    status.textContent = '';
+    status.className   = 'status-msg';
+
+    try {
+      await guardarInvitado(nombre);
+      burst();
+      document.getElementById('confirmed-name').textContent = nombre;
+      document.getElementById('modal-form').style.display    = 'none';
+      document.getElementById('modal-success').style.display = 'block';
+    } catch (e) {
+      status.textContent = '⚠ No se pudo guardar. Intentá de nuevo.';
+      status.className   = 'status-msg error';
+      console.error(e);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Confirmar</span>';
+    }
+  }
+
+  // Enter key confirms
+  document.getElementById('guest-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') confirmarAsistencia();
+  });
+
   document.getElementById('modal').addEventListener('click', e => {
     if (e.target === e.currentTarget) closeModal();
   });
