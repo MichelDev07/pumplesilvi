@@ -443,6 +443,48 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Floating message ── */
+    .floating-message {
+      position: fixed;
+      top: -5%;
+      left: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold-light);
+      opacity: 0.15;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+      transform: rotate(-15deg);
+      animation: floatAcross 20s linear infinite;
+    }
+
+    @keyframes floatAcross {
+      0% {
+        left: -20%;
+        top: 5%;
+        opacity: 0.15;
+      }
+      25% {
+        top: 20%;
+      }
+      50% {
+        top: 50%;
+        left: 50%;
+        opacity: 0.2;
+      }
+      75% {
+        top: 75%;
+      }
+      100% {
+        left: 120%;
+        top: 90%;
+        opacity: 0.15;
+      }
+    }
+
     /* ── Responsive ── */
     @media (max-width: 520px) {
       .card { padding: 2.8rem 1.6rem 2.4rem; }
@@ -455,6 +497,8 @@
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursor-ring"></div>
+
+<div class="floating-message">Confirma Asistencia ani eñembotavy</div>
 
 <canvas id="particles-canvas"></canvas>
 
