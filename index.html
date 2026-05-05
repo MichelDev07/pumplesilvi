@@ -19,7 +19,6 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -32,464 +31,304 @@
       cursor: none;
     }
 
-    /* ── Custom cursor ── */
     .cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--gold);
-      pointer-events: none;
-      z-index: 9999;
+      position: fixed; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--gold);
+      pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s ease, width 0.3s, height 0.3s, opacity 0.3s;
+      transition: transform 0.1s ease, width 0.3s, height 0.3s;
       mix-blend-mode: difference;
     }
     .cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--gold);
-      pointer-events: none;
-      z-index: 9998;
+      position: fixed; width: 36px; height: 36px;
+      border-radius: 50%; border: 1px solid var(--gold);
+      pointer-events: none; z-index: 9998;
       transform: translate(-50%, -50%);
-      transition: transform 0.18s ease, width 0.3s, height 0.3s, opacity 0.3s;
-      opacity: 0.6;
+      transition: transform 0.18s ease; opacity: 0.6;
     }
 
-    /* ── Canvas for particles ── */
-    #particles-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
+    #particles-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-    /* ── Grain overlay ── */
     body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
+      content: ''; position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.032;
-      pointer-events: none;
-      z-index: 1;
+      opacity: 0.032; pointer-events: none; z-index: 1;
     }
 
-    /* ── Main wrapper ── */
     .page {
-      position: relative;
-      z-index: 2;
+      position: relative; z-index: 2;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       padding: 3rem 1.5rem 4rem;
     }
 
-    /* ── Card ── */
-    .card {
+    /* ── Tabs nav ── */
+    .tabs-nav {
+      display: flex;
       max-width: 680px;
       width: 100%;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 3;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--muted);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 0.75rem 1rem;
+      cursor: none;
+      transition: color 0.3s, background 0.3s, border-color 0.3s;
+      position: relative;
+    }
+    .tab-btn:first-child { border-right: none; }
+    .tab-btn.active {
+      color: var(--gold);
+      border-color: var(--gold);
+      border-bottom-color: var(--deep);
+      background: linear-gradient(160deg, #161410, #0e0d0a);
+    }
+    .tab-btn:not(.active) { border-bottom-color: var(--gold-dim); }
+    .tab-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.02); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Card ── */
+    .card {
+      max-width: 680px; width: 100%;
       background: linear-gradient(160deg, #161410 0%, #0e0d0a 60%, #131210 100%);
       border: 1px solid var(--gold-dim);
       position: relative;
       padding: 3.5rem 3rem 3rem;
       text-align: center;
-      opacity: 0;
-      transform: translateY(30px);
+      opacity: 0; transform: translateY(30px);
       animation: cardIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;
     }
+    @keyframes cardIn { to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes cardIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Corner ornaments */
     .card::before, .card::after,
     .card .corner-br, .card .corner-bl {
-      content: '';
-      position: absolute;
+      content: ''; position: absolute;
       width: 40px; height: 40px;
-      border-color: var(--gold);
-      border-style: solid;
+      border-color: var(--gold); border-style: solid;
     }
-    .card::before  { top: 12px; left: 12px;  border-width: 1px 0 0 1px; }
-    .card::after   { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
+    .card::before  { top: 12px; left: 12px;   border-width: 1px 0 0 1px; }
+    .card::after   { top: 12px; right: 12px;  border-width: 1px 1px 0 0; }
     .card .corner-br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
     .card .corner-bl { bottom: 12px; left: 12px;  border-width: 0 0 1px 1px; }
 
-    /* ── Header stamp ── */
     .stamp {
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.42em;
-      color: var(--gold);
-      text-transform: uppercase;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 1.0s forwards;
+      font-size: 0.62rem; letter-spacing: 0.42em;
+      color: var(--gold); text-transform: uppercase;
+      opacity: 0; animation: fadeUp 0.9s ease 1.0s forwards;
     }
 
-    /* ── Divider ── */
     .divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      display: flex; align-items: center; gap: 1rem;
       margin: 1.2rem 0;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 1.2s forwards;
+      opacity: 0; animation: fadeUp 0.9s ease 1.2s forwards;
     }
     .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
-    .divider-diamond {
-      width: 7px; height: 7px;
-      background: var(--gold);
-      transform: rotate(45deg);
-      flex-shrink: 0;
-    }
+    .divider-diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
 
-    /* ── Name ── */
     .name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(4.5rem, 14vw, 7.5rem);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 0.88;
-      letter-spacing: -0.01em;
+      font-weight: 300; font-style: italic;
+      line-height: 0.88; letter-spacing: -0.01em;
       background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dim) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin: 0.3rem 0;
-      opacity: 0;
-      animation: nameIn 1.2s cubic-bezier(0.22,1,0.36,1) 1.4s forwards;
+      opacity: 0; animation: nameIn 1.2s cubic-bezier(0.22,1,0.36,1) 1.4s forwards;
     }
-
     @keyframes nameIn {
       from { opacity: 0; transform: scale(0.92); letter-spacing: 0.06em; }
       to   { opacity: 1; transform: scale(1);    letter-spacing: -0.01em; }
     }
 
-    /* ── Subtitle ── */
     .subtitle {
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.32em;
-      color: var(--muted);
-      text-transform: uppercase;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 2.0s forwards;
+      font-size: 0.7rem; letter-spacing: 0.32em;
+      color: var(--muted); text-transform: uppercase;
+      opacity: 0; animation: fadeUp 0.9s ease 2.0s forwards;
     }
 
-    /* ── Info block ── */
     .info-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 0 1.5rem;
-      margin: 2.6rem 0 2.2rem;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 0 1.5rem; margin: 2.6rem 0 2.2rem;
       align-items: center;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 2.2s forwards;
+      opacity: 0; animation: fadeUp 0.9s ease 2.2s forwards;
     }
     .info-item { display: flex; flex-direction: column; gap: 0.4rem; }
     .info-item:last-child { text-align: right; }
-    .info-label {
-      font-size: 0.58rem;
-      letter-spacing: 0.32em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-    .info-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.35rem;
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1.2;
-    }
+    .info-label { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); }
+    .info-value { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 300; color: var(--text); line-height: 1.2; }
     .info-sep { display: flex; flex-direction: column; align-items: center; gap: 6px; }
     .info-sep span { width: 1px; height: 28px; background: var(--gold-dim); display: block; }
-    .info-sep-gem {
-      width: 6px; height: 6px;
-      background: var(--gold);
-      transform: rotate(45deg);
-      flex-shrink: 0;
-    }
+    .info-sep-gem { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
 
-    /* ── Countdown ── */
     .countdown-wrap {
       margin: 0 0 2.4rem;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 2.5s forwards;
+      opacity: 0; animation: fadeUp 0.9s ease 2.5s forwards;
     }
-    .countdown-label {
-      font-size: 0.58rem;
-      letter-spacing: 0.36em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.1rem;
-    }
-    .countdown {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-    }
+    .countdown-label { font-size: 0.58rem; letter-spacing: 0.36em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
+    .countdown { display: flex; justify-content: center; gap: 1.2rem; }
     .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
     .cd-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
-      font-weight: 300;
-      line-height: 1;
-      color: var(--gold-light);
-      min-width: 3rem;
-      text-align: center;
-      background: rgba(201,168,76,0.07);
-      border: 1px solid var(--gold-dim);
+      font-family: 'Cormorant Garamond', serif; font-size: 2.4rem;
+      font-weight: 300; line-height: 1; color: var(--gold-light);
+      min-width: 3rem; text-align: center;
+      background: rgba(201,168,76,0.07); border: 1px solid var(--gold-dim);
       padding: 0.5rem 0.6rem 0.35rem;
     }
-    .cd-lbl {
-      font-size: 0.52rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .cd-sep {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      color: var(--gold-dim);
-      align-self: center;
-      margin-top: -0.5rem;
-    }
+    .cd-lbl { font-size: 0.52rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+    .cd-sep { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold-dim); align-self: center; margin-top: -0.5rem; }
 
-    /* ── Tagline ── */
     .tagline {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1.6rem, 5vw, 2.2rem);
-      font-style: italic;
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1.3;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 2.8s forwards;
-      position: relative;
+      font-style: italic; font-weight: 300; color: var(--text); line-height: 1.3;
+      opacity: 0; animation: fadeUp 0.9s ease 2.8s forwards;
       display: inline-block;
     }
     .tagline em {
       font-style: normal;
       background: linear-gradient(90deg, var(--gold-light), var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    /* ── Bottom ornament ── */
     .bottom-ornament {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 3.0s forwards;
+      margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      opacity: 0; animation: fadeUp 0.9s ease 3.0s forwards;
     }
     .bottom-ornament svg { opacity: 0.55; }
 
-    /* ── Confetti burst button (RSVP) ── */
     .rsvp-btn {
-      margin-top: 2.2rem;
-      display: inline-block;
-      padding: 0.85rem 2.8rem;
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.36em;
-      text-transform: uppercase;
-      cursor: none;
-      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      animation: fadeUp 0.9s ease 3.2s forwards;
+      margin-top: 2.2rem; display: inline-block;
+      padding: 0.85rem 2.8rem; background: transparent;
+      border: 1px solid var(--gold); color: var(--gold);
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.65rem;
+      letter-spacing: 0.36em; text-transform: uppercase;
+      cursor: none; transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+      opacity: 0; animation: fadeUp 0.9s ease 3.2s forwards;
     }
     .rsvp-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gold);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+      content: ''; position: absolute; inset: 0;
+      background: var(--gold); transform: scaleX(0);
+      transform-origin: left; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
     }
     .rsvp-btn:hover::before { transform: scaleX(1); }
     .rsvp-btn:hover { color: var(--black); box-shadow: 0 0 40px rgba(201,168,76,0.25); }
     .rsvp-btn span { position: relative; z-index: 1; }
 
-    /* ── Animations ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Confetti modal ── */
+    /* ── Video panel ── */
+    .video-panel-inner {
+      padding: 2.5rem 2rem 2.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1.4rem;
+      text-align: center;
+    }
+    .video-panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-style: italic; font-weight: 300;
+      color: var(--gold-light);
+    }
+    .video-panel-sub {
+      font-size: 0.62rem; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--muted);
+      margin-top: -0.6rem;
+    }
+    .video-container {
+      position: relative; width: 100%;
+      max-width: 300px; aspect-ratio: 9/16;
+      border: 1px solid var(--gold-dim);
+      overflow: hidden; background: #000;
+    }
+    .video-container iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: none;
+    }
+    .video-note {
+      font-size: 0.62rem; letter-spacing: 0.14em;
+      color: var(--muted); line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ── Modal ── */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 100;
+      align-items: center; justify-content: center;
     }
     .modal-overlay.open { display: flex; }
     .modal-box {
-      background: var(--surface);
-      border: 1px solid var(--gold-dim);
-      padding: 2.8rem 2.5rem;
-      text-align: center;
-      max-width: 380px;
-      width: 90%;
-      animation: cardIn 0.6s ease forwards;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--gold-dim);
+      padding: 2.8rem 2.5rem; text-align: center;
+      max-width: 380px; width: 90%;
+      animation: cardIn 0.6s ease forwards; position: relative;
     }
     .modal-box h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-style: italic;
-      font-weight: 300;
-      color: var(--gold-light);
-      margin-bottom: 0.6rem;
+      font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+      font-style: italic; font-weight: 300; color: var(--gold-light); margin-bottom: 0.6rem;
     }
-    .modal-box p {
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      line-height: 1.7;
-    }
+    .modal-box p { font-size: 0.78rem; letter-spacing: 0.1em; color: var(--muted); line-height: 1.7; }
     .modal-close {
-      margin-top: 1.8rem;
-      padding: 0.7rem 2.2rem;
-      background: var(--gold);
-      color: var(--black);
-      border: none;
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      cursor: none;
-      transition: opacity 0.2s;
+      margin-top: 1.8rem; padding: 0.7rem 2.2rem;
+      background: var(--gold); color: var(--black); border: none;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.62rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      cursor: none; transition: opacity 0.2s;
     }
     .modal-close:hover { opacity: 0.85; }
 
-    /* ── Name input ── */
-    .name-input-wrap {
-      margin: 1.4rem 0 0.4rem;
-      position: relative;
-    }
+    .name-input-wrap { margin: 1.4rem 0 0.4rem; position: relative; }
     .name-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--gold-dim);
-      padding: 0.6rem 0;
-      color: var(--text);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-style: italic;
-      text-align: center;
-      outline: none;
-      transition: border-color 0.3s;
-      caret-color: var(--gold);
+      width: 100%; background: transparent; border: none;
+      border-bottom: 1px solid var(--gold-dim); padding: 0.6rem 0;
+      color: var(--text); font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-style: italic; text-align: center;
+      outline: none; transition: border-color 0.3s; caret-color: var(--gold);
     }
     .name-input::placeholder { color: var(--muted); font-style: italic; }
     .name-input:focus { border-color: var(--gold); }
-    .name-input-label {
-      display: block;
-      font-size: 0.56rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.5rem;
-    }
+    .name-input-label { display: block; font-size: 0.56rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
     .input-line {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      transform: scaleX(0);
-      transition: transform 0.4s ease;
-      margin-top: 2px;
+      height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform 0.4s ease; margin-top: 2px;
     }
     .name-input:focus ~ .input-line { transform: scaleX(1); }
 
-    /* ── Status message ── */
-    .status-msg {
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      margin-top: 0.8rem;
-      min-height: 1.2rem;
-      transition: color 0.3s;
-    }
-    .status-msg.error { color: #e07070; }
+    .status-msg { font-size: 0.68rem; letter-spacing: 0.12em; margin-top: 0.8rem; min-height: 1.2rem; }
+    .status-msg.error   { color: #e07070; }
     .status-msg.success { color: var(--gold-light); }
 
-    /* ── Loading spinner ── */
     .spinner {
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 1px solid var(--gold-dim);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
+      display: inline-block; width: 14px; height: 14px;
+      border: 1px solid var(--gold-dim); border-top-color: var(--gold);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Floating message ── */
-    .floating-message {
-      position: fixed;
-      top: -5%;
-      left: 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--gold-light);
-      opacity: 0.15;
-      white-space: nowrap;
-      pointer-events: none;
-      z-index: 10;
-      transform: rotate(-15deg);
-      animation: floatAcross 20s linear infinite;
-    }
-
-    @keyframes floatAcross {
-      0% {
-        left: -20%;
-        top: 5%;
-        opacity: 0.15;
-      }
-      25% {
-        top: 20%;
-      }
-      50% {
-        top: 50%;
-        left: 50%;
-        opacity: 0.2;
-      }
-      75% {
-        top: 75%;
-      }
-      100% {
-        left: 120%;
-        top: 90%;
-        opacity: 0.15;
-      }
-    }
-
-    /* ── Responsive ── */
     @media (max-width: 520px) {
       .card { padding: 2.8rem 1.6rem 2.4rem; }
       .info-grid { gap: 0 0.8rem; }
       .info-value { font-size: 1.1rem; }
+      .tab-btn { font-size: 0.52rem; letter-spacing: 0.18em; padding: 0.7rem 0.5rem; }
     }
   </style>
 </head>
@@ -497,129 +336,148 @@
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursor-ring"></div>
-
-<div class="floating-message">El que no confirma es gei</div>
-
 <canvas id="particles-canvas"></canvas>
 
 <div class="page">
-  <div class="card">
-    <div class="corner-br"></div>
-    <div class="corner-bl"></div>
 
-    <p class="stamp">Una noche especial · 2026</p>
-
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line"></div>
-    </div>
-
-    <p class="subtitle">Celebración de cumpleaños</p>
-
-    <h1 class="name">Silvia</h1>
-
-    <div class="divider" style="animation-delay:1.7s">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line"></div>
-    </div>
-
-    <div class="info-grid">
-      <div class="info-item">
-        <span class="info-label">Fecha</span>
-        <span class="info-value">Miércoles<br>6 de Mayo</span>
-      </div>
-      <div class="info-sep">
-        <span></span>
-        <div class="info-sep-gem"></div>
-        <span></span>
-      </div>
-      <div class="info-item" style="text-align:right">
-        <span class="info-label">Hora · Lugar</span>
-        <span class="info-value">21 : 00 h<br>Mi Casa</span>
-      </div>
-    </div>
-
-    <!-- Countdown -->
-    <div class="countdown-wrap">
-      <p class="countdown-label">Faltan</p>
-      <div class="countdown">
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-d">00</div>
-          <div class="cd-lbl">Días</div>
-        </div>
-        <div class="cd-sep">·</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-h">00</div>
-          <div class="cd-lbl">Horas</div>
-        </div>
-        <div class="cd-sep">·</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-m">00</div>
-          <div class="cd-lbl">Min</div>
-        </div>
-        <div class="cd-sep">·</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-s">00</div>
-          <div class="cd-lbl">Seg</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider" style="animation-delay:2.6s">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line"></div>
-    </div>
-
-    <p class="tagline">
-      <em>Te ha'arors</em> &nbsp;—&nbsp; será una noche<br>que no olvidarás.
-    </p>
-
-    <div class="bottom-ornament">
-      <svg width="120" height="16" viewBox="0 0 120 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 8 H50" stroke="#c9a84c" stroke-width="0.5"/>
-        <polygon points="60,0 65,8 60,16 55,8" fill="none" stroke="#c9a84c" stroke-width="0.5"/>
-        <path d="M70 8 H120" stroke="#c9a84c" stroke-width="0.5"/>
-      </svg>
-    </div>
-
-    <button class="rsvp-btn" onclick="openModal()">
-      <span>Confirmar asistencia</span>
+  <!-- Tabs nav -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" id="tab-inv" onclick="switchTab('inv')">
+      🎂 &nbsp;Invitación
+    </button>
+    <button class="tab-btn" id="tab-vid" onclick="switchTab('vid')">
+      🎬 &nbsp;JAJAJAJA
     </button>
   </div>
-</div>
 
-<!-- Modal -->
+  <!-- Tab: Invitación -->
+  <div class="tab-panel active" id="panel-inv" style="width:100%;max-width:680px;">
+    <div class="card">
+      <div class="corner-br"></div>
+      <div class="corner-bl"></div>
+
+      <p class="stamp">Una noche especial · 2026</p>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="subtitle">Celebración de cumpleaños</p>
+      <h1 class="name">Silvia</h1>
+
+      <div class="divider" style="animation-delay:1.7s">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Fecha</span>
+          <span class="info-value">Miércoles<br>6 de Mayo</span>
+        </div>
+        <div class="info-sep">
+          <span></span>
+          <div class="info-sep-gem"></div>
+          <span></span>
+        </div>
+        <div class="info-item" style="text-align:right">
+          <span class="info-label">Hora · Lugar</span>
+          <span class="info-value">21 : 00 h<br>Mi Casa</span>
+        </div>
+      </div>
+
+      <div class="countdown-wrap">
+        <p class="countdown-label">Faltan</p>
+        <div class="countdown">
+          <div class="cd-unit"><div class="cd-num" id="cd-d">00</div><div class="cd-lbl">Días</div></div>
+          <div class="cd-sep">·</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Horas</div></div>
+          <div class="cd-sep">·</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-m">00</div><div class="cd-lbl">Min</div></div>
+          <div class="cd-sep">·</div>
+          <div class="cd-unit"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Seg</div></div>
+        </div>
+      </div>
+
+      <div class="divider" style="animation-delay:2.6s">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="tagline">
+        <em>Te ha'arors</em> &nbsp;—&nbsp; será una noche<br>que no olvidarás.
+      </p>
+
+      <div class="bottom-ornament">
+        <svg width="120" height="16" viewBox="0 0 120 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 8 H50" stroke="#c9a84c" stroke-width="0.5"/>
+          <polygon points="60,0 65,8 60,16 55,8" fill="none" stroke="#c9a84c" stroke-width="0.5"/>
+          <path d="M70 8 H120" stroke="#c9a84c" stroke-width="0.5"/>
+        </svg>
+      </div>
+
+      <button class="rsvp-btn" onclick="openModal()">
+        <span>Confirmar asistencia</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab: Saludo (video) -->
+  <div class="tab-panel" id="panel-vid" style="width:100%;max-width:680px;">
+    <div class="card">
+      <div class="corner-br"></div>
+      <div class="corner-bl"></div>
+      <div class="video-panel-inner">
+        <p class="stamp" style="opacity:1;animation:none">Un mensaje especial · 2026</p>
+        <div class="divider" style="opacity:1;animation:none;margin:0.8rem 0">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+        <h2 class="video-panel-title">Un saludo con todo el corazón</h2>
+        <p class="video-panel-sub">Para vos, Silvia ✨</p>
+        <div class="video-container">
+          <iframe
+            id="yt-frame"
+            src="https://www.youtube.com/embed/fbA7DZQZPf4?rel=0&modestbranding=1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="video-note">Que este día sea tan especial<br>como vos lo sos para todos nosotros 🥂</p>
+        <div class="divider" style="opacity:1;animation:none;margin:0.4rem 0">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- Modal RSVP -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-
-    <!-- Step 1: form -->
     <div id="modal-form">
       <h2>¿Quién va? ✨</h2>
       <p style="margin-bottom:0.4rem">Dejá tu nombre para confirmar tu lugar.</p>
       <div class="name-input-wrap">
         <label class="name-input-label" for="guest-name">Tu nombre</label>
-        <input
-          class="name-input"
-          id="guest-name"
-          type="text"
-          placeholder="Escribí tu nombre..."
-          autocomplete="off"
-          maxlength="80"
-        />
+        <input class="name-input" id="guest-name" type="text"
+          placeholder="Escribí tu nombre..." autocomplete="off" maxlength="80"/>
         <div class="input-line"></div>
       </div>
       <p class="status-msg" id="status-msg"></p>
       <button class="modal-close" id="btn-confirm" onclick="confirmarAsistencia()">
         <span>Confirmar</span>
-      </button>
-      <br>
+      </button><br>
       <button style="background:transparent;border:none;color:var(--muted);font-family:'Josefin Sans',sans-serif;font-size:0.6rem;letter-spacing:0.2em;cursor:none;margin-top:0.8rem;text-transform:uppercase;" onclick="closeModal()">Cancelar</button>
     </div>
-
-    <!-- Step 2: success -->
     <div id="modal-success" style="display:none">
       <h2>¡Nos vemos! 🥂</h2>
       <p>¡Qué alegría contar con vos, <strong id="confirmed-name" style="color:var(--gold)"></strong>!<br>
@@ -627,7 +485,6 @@
          Va a ser una noche increíble.</p>
       <button class="modal-close" onclick="closeModal()" style="margin-top:1.6rem">Cerrar</button>
     </div>
-
   </div>
 </div>
 
@@ -635,216 +492,141 @@
   /* ── Cursor ── */
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursor-ring');
-  let mx = -100, my = -100, rx = -100, ry = -100;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  (function animCursor() {
-    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  let mx=-100,my=-100,rx=-100,ry=-100;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animCursor(){
+    cursor.style.left=mx+'px';cursor.style.top=my+'px';
+    rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+    ring.style.left=rx+'px';ring.style.top=ry+'px';
     requestAnimationFrame(animCursor);
   })();
 
-  /* ── Particle canvas ── */
-  const canvas = document.getElementById('particles-canvas');
-  const ctx    = canvas.getContext('2d');
-  let W, H;
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  const GOLD = ['#c9a84c','#e8cc80','#7a611f','#f0d896'];
-
-  class Particle {
-    constructor() { this.reset(true); }
-    reset(init) {
-      this.x  = Math.random() * W;
-      this.y  = init ? Math.random() * H : H + 10;
-      this.r  = Math.random() * 1.4 + 0.3;
-      this.vx = (Math.random() - 0.5) * 0.25;
-      this.vy = -(Math.random() * 0.5 + 0.15);
-      this.a  = Math.random() * 0.7 + 0.1;
-      this.da = (Math.random() * 0.003 + 0.001) * (Math.random() < 0.5 ? 1 : -1);
-      this.col= GOLD[Math.floor(Math.random() * GOLD.length)];
+  /* ── Particles ── */
+  const canvas=document.getElementById('particles-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const GOLD=['#c9a84c','#e8cc80','#7a611f','#f0d896'];
+  class Particle{
+    constructor(){this.reset(true);}
+    reset(init){
+      this.x=Math.random()*W;this.y=init?Math.random()*H:H+10;
+      this.r=Math.random()*1.4+0.3;this.vx=(Math.random()-0.5)*0.25;
+      this.vy=-(Math.random()*0.5+0.15);this.a=Math.random()*0.7+0.1;
+      this.da=(Math.random()*0.003+0.001)*(Math.random()<0.5?1:-1);
+      this.col=GOLD[Math.floor(Math.random()*GOLD.length)];
     }
-    update() {
-      this.x += this.vx; this.y += this.vy; this.a += this.da;
-      if (this.a <= 0 || this.a >= 0.8) this.da *= -1;
-      if (this.y < -10) this.reset(false);
+    update(){
+      this.x+=this.vx;this.y+=this.vy;this.a+=this.da;
+      if(this.a<=0||this.a>=0.8)this.da*=-1;
+      if(this.y<-10)this.reset(false);
     }
-    draw() {
-      ctx.save();
-      ctx.globalAlpha = this.a;
-      ctx.fillStyle   = this.col;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+    draw(){
+      ctx.save();ctx.globalAlpha=this.a;ctx.fillStyle=this.col;
+      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();ctx.restore();
     }
   }
-
-  const particles = Array.from({length: 130}, () => new Particle());
-
-  function animParticles() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animParticles);
-  }
-  animParticles();
+  const particles=Array.from({length:130},()=>new Particle());
+  (function anim(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(anim);})();
 
   /* ── Countdown ── */
-  const target = new Date('2026-05-06T21:00:00');
-
-  function pad(n) { return String(n).padStart(2,'0'); }
-
-  function tick() {
-    const diff = target - new Date();
-    if (diff <= 0) {
-      document.getElementById('cd-d').textContent =
-      document.getElementById('cd-h').textContent =
-      document.getElementById('cd-m').textContent =
-      document.getElementById('cd-s').textContent = '00';
-      return;
-    }
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000)  / 60000);
-    const secs  = Math.floor((diff % 60000)    / 1000);
-    document.getElementById('cd-d').textContent = pad(days);
-    document.getElementById('cd-h').textContent = pad(hours);
-    document.getElementById('cd-m').textContent = pad(mins);
-    document.getElementById('cd-s').textContent = pad(secs);
+  const target=new Date('2026-05-06T21:00:00');
+  function pad(n){return String(n).padStart(2,'0');}
+  function tick(){
+    const diff=target-new Date();
+    if(diff<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(id=>document.getElementById(id).textContent='00');return;}
+    document.getElementById('cd-d').textContent=pad(Math.floor(diff/86400000));
+    document.getElementById('cd-h').textContent=pad(Math.floor((diff%86400000)/3600000));
+    document.getElementById('cd-m').textContent=pad(Math.floor((diff%3600000)/60000));
+    document.getElementById('cd-s').textContent=pad(Math.floor((diff%60000)/1000));
   }
-  tick();
-  setInterval(tick, 1000);
+  tick();setInterval(tick,1000);
 
-  /* ── Confetti burst ── */
-  function burst() {
-    const colors = ['#c9a84c','#e8cc80','#fff8e1','#7a611f','#f0d896','#ffffff'];
-    const pieces = [];
-    for (let i = 0; i < 120; i++) {
-      pieces.push({
-        x: W / 2, y: H / 2,
-        vx: (Math.random() - 0.5) * 14,
-        vy: (Math.random() - 0.7) * 14,
-        r: Math.random() * 5 + 2,
-        col: colors[Math.floor(Math.random() * colors.length)],
-        a: 1, rot: Math.random() * 360,
-        rSpeed: (Math.random() - 0.5) * 8,
-        shape: Math.random() < 0.5 ? 'rect' : 'circle'
-      });
-    }
-    const overlay = document.createElement('canvas');
-    overlay.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:200';
-    overlay.width = W; overlay.height = H;
-    document.body.appendChild(overlay);
-    const octx = overlay.getContext('2d');
-
-    function drawBurst() {
-      octx.clearRect(0, 0, W, H);
-      let alive = false;
-      pieces.forEach(p => {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.35;
-        p.a -= 0.012; p.rot += p.rSpeed;
-        if (p.a <= 0) return;
-        alive = true;
-        octx.save();
-        octx.globalAlpha = p.a;
-        octx.fillStyle   = p.col;
-        octx.translate(p.x, p.y);
-        octx.rotate(p.rot * Math.PI / 180);
-        if (p.shape === 'rect') octx.fillRect(-p.r, -p.r/2, p.r * 2, p.r);
-        else { octx.beginPath(); octx.arc(0, 0, p.r, 0, Math.PI*2); octx.fill(); }
-        octx.restore();
-      });
-      if (alive) requestAnimationFrame(drawBurst);
-      else overlay.remove();
-    }
-    drawBurst();
-  }
-
-  /* ── Supabase config asa ── */
-  const SUPABASE_URL  = 'https://qidmdxvevuzdbyjjteqv.supabase.co';
-  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpZG1keHZldnV6ZGJ5amp0ZXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NjIzODAsImV4cCI6MjA5MzMzODM4MH0.cepNrb2AL4IlTcz0tMJJX0IyU8gOrgxo4AmM1vYgUkw';
-
-  async function guardarInvitado(nombre) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/invitados`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ nombre })
+  /* ── Tabs ── */
+  function switchTab(tab){
+    ['inv','vid'].forEach(t=>{
+      document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+      document.getElementById('panel-'+t).classList.toggle('active',t===tab);
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || `Error ${res.status}`);
-    }
+  }
+
+  /* ── Confetti ── */
+  function burst(){
+    const colors=['#c9a84c','#e8cc80','#fff8e1','#7a611f','#f0d896','#ffffff'];
+    const pieces=[];
+    for(let i=0;i<120;i++)pieces.push({
+      x:W/2,y:H/2,vx:(Math.random()-0.5)*14,vy:(Math.random()-0.7)*14,
+      r:Math.random()*5+2,col:colors[Math.floor(Math.random()*colors.length)],
+      a:1,rot:Math.random()*360,rSpeed:(Math.random()-0.5)*8,
+      shape:Math.random()<0.5?'rect':'circle'
+    });
+    const ov=document.createElement('canvas');
+    ov.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:200';
+    ov.width=W;ov.height=H;document.body.appendChild(ov);
+    const oc=ov.getContext('2d');
+    (function draw(){
+      oc.clearRect(0,0,W,H);let alive=false;
+      pieces.forEach(p=>{
+        p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.a-=0.012;p.rot+=p.rSpeed;
+        if(p.a<=0)return;alive=true;
+        oc.save();oc.globalAlpha=p.a;oc.fillStyle=p.col;
+        oc.translate(p.x,p.y);oc.rotate(p.rot*Math.PI/180);
+        if(p.shape==='rect')oc.fillRect(-p.r,-p.r/2,p.r*2,p.r);
+        else{oc.beginPath();oc.arc(0,0,p.r,0,Math.PI*2);oc.fill();}
+        oc.restore();
+      });
+      if(alive)requestAnimationFrame(draw);else ov.remove();
+    })();
+  }
+
+  /* ── Supabase ── */
+  const SUPABASE_URL='https://qidmdxvevuzdbyjjteqv.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpZG1keHZldnV6ZGJ5amp0ZXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NjIzODAsImV4cCI6MjA5MzMzODM4MH0.cepNrb2AL4IlTcz0tMJJX0IyU8gOrgxo4AmM1vYgUkw';
+
+  async function guardarInvitado(nombre){
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/invitados`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({nombre})
+    });
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||`Error ${res.status}`);}
   }
 
   /* ── Modal ── */
-  function openModal() {
+  function openModal(){
     document.getElementById('modal').classList.add('open');
-    document.getElementById('modal-form').style.display    = 'block';
-    document.getElementById('modal-success').style.display = 'none';
-    document.getElementById('guest-name').value = '';
-    document.getElementById('status-msg').textContent = '';
-    document.getElementById('status-msg').className  = 'status-msg';
-    setTimeout(() => document.getElementById('guest-name').focus(), 100);
+    document.getElementById('modal-form').style.display='block';
+    document.getElementById('modal-success').style.display='none';
+    document.getElementById('guest-name').value='';
+    document.getElementById('status-msg').textContent='';
+    document.getElementById('status-msg').className='status-msg';
+    setTimeout(()=>document.getElementById('guest-name').focus(),100);
+  }
+  function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+  async function confirmarAsistencia(){
+    const input=document.getElementById('guest-name');
+    const status=document.getElementById('status-msg');
+    const btn=document.getElementById('btn-confirm');
+    const nombre=input.value.trim();
+    if(!nombre){status.textContent='Por favor escribí tu nombre.';status.className='status-msg error';input.focus();return;}
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span><span>Guardando...</span>';
+    status.textContent='';status.className='status-msg';
+    try{
+      await guardarInvitado(nombre);burst();
+      document.getElementById('confirmed-name').textContent=nombre;
+      document.getElementById('modal-form').style.display='none';
+      document.getElementById('modal-success').style.display='block';
+    }catch(e){
+      status.textContent='⚠ No se pudo guardar. Intentá de nuevo.';
+      status.className='status-msg error';console.error(e);
+    }finally{btn.disabled=false;btn.innerHTML='<span>Confirmar</span>';}
   }
 
-  function closeModal() {
-    document.getElementById('modal').classList.remove('open');
-  }
-
-  async function confirmarAsistencia() {
-    const input  = document.getElementById('guest-name');
-    const status = document.getElementById('status-msg');
-    const btn    = document.getElementById('btn-confirm');
-    const nombre = input.value.trim();
-
-    if (!nombre) {
-      status.textContent = 'Por favor escribí tu nombre.';
-      status.className   = 'status-msg error';
-      input.focus();
-      return;
-    }
-
-    // Loading state
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span><span>Guardando...</span>';
-    status.textContent = '';
-    status.className   = 'status-msg';
-
-    try {
-      await guardarInvitado(nombre);
-      burst();
-      document.getElementById('confirmed-name').textContent = nombre;
-      document.getElementById('modal-form').style.display    = 'none';
-      document.getElementById('modal-success').style.display = 'block';
-    } catch (e) {
-      status.textContent = '⚠ No se pudo guardar. Intentá de nuevo.';
-      status.className   = 'status-msg error';
-      console.error(e);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<span>Confirmar</span>';
-    }
-  }
-
-  // Enter key confirms
-  document.getElementById('guest-name').addEventListener('keydown', e => {
-    if (e.key === 'Enter') confirmarAsistencia();
-  });
-
-  document.getElementById('modal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-  });
+  document.getElementById('guest-name').addEventListener('keydown',e=>{if(e.key==='Enter')confirmarAsistencia();});
+  document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 </script>
 </body>
 </html>
